@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from '../../config/firebase';
 
-const Add = ({ employees, setEmployees, setIsAdding }) => {
+const Add = ({ employees, setEmployees, setIsAdding,getEmployees }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,10 +32,15 @@ const Add = ({ employees, setEmployees, setIsAdding }) => {
 
     employees.push(newEmployee);
 
-    // TODO: Add doc to DB
+    const addEmployee= async()=>{
+    await addDoc(collection(db, "Employees"), newEmployee);
+    }
 
+    // TODO: Add doc to DB
+     addEmployee();
     setEmployees(employees);
     setIsAdding(false);
+    getEmployees();
 
     Swal.fire({
       icon: 'success',
