@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { doc, setDoc } from "firebase/firestore"; 
+ import { db } from '../../config/firebase';
 
-const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
+const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing,getEmployees }) => {
   const id = selectedEmployee.id;
 
   const [firstName, setFirstName] = useState(selectedEmployee.firstName);
@@ -10,7 +12,8 @@ const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
   const [salary, setSalary] = useState(selectedEmployee.salary);
   const [date, setDate] = useState(selectedEmployee.date);
 
-  const handleUpdate = e => {
+
+  const handleUpdate = async(e) => {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !salary || !date) {
@@ -32,9 +35,11 @@ const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
     };
 
     // TODO: Update document
+     await setDoc(doc(db, "Employees", id),employee);
 
     setEmployees(employees);
     setIsEditing(false);
+    getEmployees();
 
     Swal.fire({
       icon: 'success',
